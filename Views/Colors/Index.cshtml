@@ -1,0 +1,57 @@
+﻿@model IEnumerable<WebApplication_API.Models.Color>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+@if (!(bool)ViewData["Buscador"])
+{
+    <h1>Index</h1>
+    <p>
+        <a asp-action="Create">Create New</a>
+    </p>
+}
+else
+{
+    <h1>Buscador</h1>
+}
+
+@(Html.DevExtreme().DataGrid<WebApplication_API.Models.Color>()
+    //.DataSource(ds => ds.Mvc()
+    //    .Controller("Colors")
+    //    .LoadAction("Get")
+    //    .InsertAction("Post")
+    //    .UpdateAction("Put")
+    //    .DeleteAction("Delete")
+    //    .Key("iden")
+    //)
+    .DataSource(Model)
+    .RemoteOperations(true)
+    .SearchPanel(s => s
+        .Visible(true)
+        .HighlightCaseSensitive(true)
+    )
+    .ID("GridColor")
+    .OnRowClick("GridColorOnRowClick")
+    .Columns(columns =>
+     {
+
+     columns.AddFor(m => m.iden).Visible(false);
+
+     columns.AddFor(m => m.codigo);
+
+     columns.AddFor(m => m.nombre);
+
+     columns.AddFor(m => m.TieneError).Visible(false);
+
+     columns.AddFor(m => m.Error).Visible(false);
+     columns.Add().Visible(!(bool)ViewData["Buscador"]).DataField("Actions").CellTemplate(@<text>
+                <a href="@Url.Action("Edit")/<%= data.iden %>">Edit</a>
+                <a href="@Url.Action("Delete")/<%= data.iden %>">Delete</a>
+    </text>);
+})
+//.Editing(e => e
+//.AllowAdding(true)
+//.AllowUpdating(true)
+//.AllowDeleting(true)
+)
